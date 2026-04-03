@@ -1479,7 +1479,7 @@
     const STEPS = [
       {
         key: 'q1', entry: ENTRY.q1,
-        label: '01 / 07',
+        label: '01 / 05',
         question: 'Что тебя больше всего цепляет в людях?',
         type: 'radio',
         cols: 2,
@@ -1492,7 +1492,7 @@
       },
       {
         key: 'q2', entry: ENTRY.q2,
-        label: '02 / 07',
+        label: '02 / 05',
         question: 'В чём ты лучший среди друзей?',
         type: 'radio',
         cols: 2,
@@ -1511,16 +1511,16 @@
       },
       {
         key: 'q3', entry: ENTRY.q3,
-        label: '03 / 07',
+        label: '03 / 05',
         question: 'Уровень выгорания прямо сейчас?',
         type: 'scale',
-        hint: '1 — полон сил,  10 — на грани'
+        hint: '1 — полностью выгорел,  10 — чувствую себя хорошо'
       },
       {
         key: 'q4', entry: ENTRY.q4,
-        label: '04 / 07',
-        question: 'Откуда к тебе приходят клиенты?',
-        type: 'radio',
+        label: '04 / 05',
+        question: 'Клиенты приходят из: (можно выбрать несколько)',
+        type: 'checkbox',
         cols: 1,
         options: [
           'Сарафанное радио / рекомендации',
@@ -1532,8 +1532,8 @@
       },
       {
         key: 'q5', entry: ENTRY.q5,
-        label: '05 / 07',
-        question: 'Кайф для тебя — это...',
+        label: '05 / 05',
+        question: 'Кайф — это:',
         type: 'radio',
         cols: 1,
         options: [
@@ -1546,15 +1546,15 @@
       },
       {
         key: 'q6', entry: ENTRY.q6,
-        label: '06 / 07',
-        question: 'Хочешь получить PDF с твоей суперсилой на email?',
+        label: '',
+        question: 'Отправить результат на email?',
         type: 'radio',
         cols: 2,
         options: ['Да, отправьте', 'Нет']
       },
       {
         key: 'q7', entry: ENTRY.q7,
-        label: '07 / 07',
+        label: '',
         question: 'Введи email для PDF суперсилы',
         type: 'email'
       }
@@ -1603,7 +1603,9 @@
       updateProgress();
 
       let html = `<div class="quiz-step-wrap">
-        <div class="quiz-step-label">${step.label}</div>
+        ${step.label
+          ? `<div class="quiz-step-label">${step.label}</div>`
+          : `<div class="quiz-step-label" style="color:var(--text-muted);">✉&nbsp; Получить результат</div>`}
         <div class="quiz-q">${step.question}</div>`;
 
       if (step.type === 'radio') {
@@ -1617,6 +1619,24 @@
           </button>`;
         });
         html += `</div>`;
+
+      } else if (step.type === 'checkbox') {
+        // Множественный выбор — храним как массив
+        if (!Array.isArray(qState[step.key])) qState[step.key] = [];
+        const gridClass = step.cols === 1 ? 'quiz-options-grid single' : 'quiz-options-grid';
+        html += `<div class="${gridClass}">`;
+        step.options.forEach(opt => {
+          const checked = qState[step.key].includes(opt);
+          const sel = checked ? 'selected' : '';
+          html += `<button class="quiz-opt-btn ${sel}" data-val="${opt}" onclick="toggleCheck('${step.key}','${opt.replace(/'/g,"\\'")}',this)">
+            <span class="opt-tick" style="${checked ? '' : 'font-size:0'}">${checked ? '✓' : '&nbsp;'}</span>
+            <span>${opt}</span>
+          </button>`;
+        });
+        html += `</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:-16px;margin-bottom:24px;letter-spacing:0.05em;">
+            Выбрано: <span id="checkCount">${qState[step.key].length}</span>
+          </div>`;
 
       } else if (step.type === 'scale') {
         html += `<div class="quiz-slider-wrap">
@@ -1659,10 +1679,30 @@
     }
 
     function canProceed(step) {
-      if (step.type === 'radio')  return !!qState[step.key];
-      if (step.type === 'scale')  return !!qState[step.key];
-      if (step.type === 'email')  return /\S+@\S+\.\S+/.test(qState[step.key] || '');
+      if (step.type === 'radio')    return !!qState[step.key];
+      if (step.type === 'checkbox') return Array.isArray(qState[step.key]) && qState[step.key].length > 0;
+      if (step.type === 'scale')    return !!qState[step.key];
+      if (step.type === 'email')    return /\S+@\S+\.\S+/.test(qState[step.key] || '');
       return false;
+    }
+
+    function toggleCheck(key, val, el) {
+      if (!Array.isArray(qState[key])) qState[key] = [];
+      const idx = qState[key].indexOf(val);
+      if (idx === -1) {
+        qState[key].push(val);
+        el.classList.add('selected');
+        el.querySelector('.opt-tick').textContent = '✓';
+        el.querySelector('.opt-tick').style.fontSize = '';
+      } else {
+        qState[key].splice(idx, 1);
+        el.classList.remove('selected');
+        el.querySelector('.opt-tick').textContent = '\u00a0';
+        el.querySelector('.opt-tick').style.fontSize = '0';
+      }
+      const counter = document.getElementById('checkCount');
+      if (counter) counter.textContent = qState[key].length;
+      updateNextBtn();
     }
 
     function updateNextBtn() {
@@ -1780,7 +1820,17 @@
       };
       Object.entries(map).forEach(([k, entryId]) => {
         const val = qState[k];
-        if (val !== undefined && val !== '') {
+        if (val === undefined || val === '') return;
+        // checkbox — массив значений, каждое отправляем отдельным полем
+        if (Array.isArray(val)) {
+          val.forEach(v => {
+            const inp = document.createElement('input');
+            inp.type  = 'hidden';
+            inp.name  = entryId;
+            inp.value = v;
+            form.appendChild(inp);
+          });
+        } else {
           const inp = document.createElement('input');
           inp.type  = 'hidden';
           inp.name  = entryId;
