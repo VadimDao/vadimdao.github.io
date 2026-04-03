@@ -348,8 +348,62 @@
       line-height: 1.75;
       color: var(--text-muted);
     }
-    .milestone-dot {
-      display: none;
+    .milestone-dot { display: none; }
+
+    /* ─── COMPARISON TABLE ───────────────────────────────────── */
+    .compare-wrap {
+      margin-top: 64px;
+    }
+    .compare-label {
+      font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 20px; display: block;
+    }
+    .compare-table {
+      width: 100%; border-collapse: collapse;
+    }
+    .compare-table th {
+      font-family: var(--font-serif); font-size: 18px; font-weight: 400;
+      padding: 14px 20px; text-align: left;
+      border-bottom: 2px solid var(--gold-border);
+      color: var(--text-muted);
+    }
+    .compare-table th.hl { color: var(--gold); border-bottom-color: var(--gold); }
+    .compare-table td {
+      padding: 12px 20px; font-size: 14px; line-height: 1.5;
+      border-bottom: 1px solid rgba(200,164,90,0.1);
+      color: var(--text-muted);
+    }
+    .compare-table td.hl { color: var(--text); }
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    /* ─── ПОМОГАЮ БЕЗ БОЛИ ───────────────────────────────────── */
+    .help-cards {
+      display: flex; flex-direction: column; gap: 12px;
+      margin-top: 8px;
+    }
+    .help-card {
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px;
+      background: var(--surface-2);
+      border-left: 2px solid var(--gold);
+      transition: background 0.3s;
+    }
+    .help-card:hover { background: var(--green-mid); }
+    .help-icon {
+      width: 40px; height: 40px; flex-shrink: 0;
+      background: var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .help-card-text { font-size: 17px; color: var(--text); }
+    .help-result {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: var(--gold);
+      color: #060e08;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.1em;
     }
 
     /* ─── VALUES ─────────────────────────────────────────────── */
@@ -1086,42 +1140,102 @@
         <div class="path-left">
           <div class="reveal">
             <span class="label">Почему я этим занимаюсь</span>
-            <h2 class="section-title">Мой<br><em style="font-style:italic;color:var(--gold)">путь</em></h2>
+            <h2 class="section-title">От выживания<br>к <em style="font-style:italic;color:var(--gold)">суперсиле</em></h2>
             <div class="divider"></div>
             <blockquote class="path-quote">
-              «Я прошёл через кризис смыслов, потерю ориентиров и страх собственного потенциала. Именно этот путь сделал меня ментором.»
+              «Я превратил навык выживания в суперсилу — помогать другим, избегая боли, которую пережил сам.»
             </blockquote>
-            <p class="path-author">— [Ваше Имя]</p>
+            <p class="path-author">— Вадим Ермолаев</p>
+          </div>
+
+          <!-- Помогаю без боли -->
+          <div class="reveal" style="margin-top:48px;">
+            <span class="label" style="display:block;margin-bottom:20px;">Помогаю без боли</span>
+            <div class="help-cards">
+              <div class="help-card">
+                <div class="help-icon">⚡</div>
+                <span class="help-card-text">Раскрываю силу</span>
+              </div>
+              <div class="help-card">
+                <div class="help-icon">🧭</div>
+                <span class="help-card-text">Даю план</span>
+              </div>
+              <div class="help-card">
+                <div class="help-icon">△</div>
+                <span class="help-card-text">Реализую Я</span>
+              </div>
+            </div>
+            <div class="help-result">За 8 сессий: х2 доход + кайф</div>
           </div>
         </div>
+
         <div class="path-milestones">
+          <!-- Путь трансформации -->
           <div class="milestone reveal">
-            <div class="milestone-year">[Год]</div>
+            <div class="milestone-year">Армия</div>
             <div class="milestone-content">
-              <h4>Точка перелома</h4>
-              <p>[Опишите момент, когда вы осознали необходимость перемен — личный кризис, профессиональное выгорание или переломное событие в жизни.]</p>
+              <h4>Дисциплина</h4>
+              <p>Военная служба заложила фундамент характера — стойкость, системность и умение действовать в условиях неопределённости.</p>
             </div>
           </div>
           <div class="milestone reveal reveal-delay-1">
-            <div class="milestone-year">[Год]</div>
+            <div class="milestone-year">БГАС</div>
             <div class="milestone-content">
-              <h4>Поиск и практики</h4>
-              <p>[Расскажите о своём пути: какие методики, учителя, практики и инсайты привели вас к трансформации и помогли обрести себя.]</p>
+              <h4>IT-база</h4>
+              <p>Академическое образование в сфере IT сформировало аналитическое мышление и системный подход к решению задач.</p>
             </div>
           </div>
           <div class="milestone reveal reveal-delay-2">
-            <div class="milestone-year">[Год]</div>
+            <div class="milestone-year">6 лет</div>
             <div class="milestone-content">
-              <h4>Первые результаты</h4>
-              <p>[Опишите первые значимые результаты — изменения в жизни, профессии, отношениях — которые подтвердили правильность выбранного пути.]</p>
+              <h4>Найм: финансы</h4>
+              <p>Шесть лет в корпоративном найме — глубокое погружение в финансовые процессы, понимание бизнеса изнутри и накопление практического опыта.</p>
             </div>
           </div>
           <div class="milestone reveal reveal-delay-3">
+            <div class="milestone-year">Рост</div>
+            <div class="milestone-content">
+              <h4>Волновой анализ</h4>
+              <p>Освоение волнового анализа рынков — инструмент, который изменил взгляд на циклы, паттерны и принятие решений в жизни и бизнесе.</p>
+            </div>
+          </div>
+          <div class="milestone reveal reveal-delay-4">
             <div class="milestone-year">Сейчас</div>
             <div class="milestone-content">
-              <h4>Менторство как призвание</h4>
-              <p>[Объясните, почему вы выбрали менторство: желание передавать опыт, видеть трансформацию других, создавать инструменты роста для своих клиентов.]</p>
+              <h4>Таиланд: трейдинг и менторство</h4>
+              <p>Свобода выбора места жизни, трейдинг и передача накопленного опыта через менторство — помогаю другим пройти этот путь быстрее и без лишней боли.</p>
             </div>
+          </div>
+
+          <!-- Психолог vs Ментор -->
+          <div class="compare-wrap reveal">
+            <span class="compare-label">Психолог vs. Ментор — в чём разница?</span>
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Психолог</th>
+                  <th class="hl">Ментор</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Фокус: прошлое</td>
+                  <td class="hl">Фокус: будущее</td>
+                </tr>
+                <tr>
+                  <td>Время: годы</td>
+                  <td class="hl">Время: 8 сессий</td>
+                </tr>
+                <tr>
+                  <td>Опыт: академический</td>
+                  <td class="hl">Опыт: IT и бизнес</td>
+                </tr>
+                <tr>
+                  <td>Результат: стабильность</td>
+                  <td class="hl">Результат: х2 доход</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1134,18 +1248,18 @@
       <div class="values-grid">
         <div class="value-card reveal">
           <div class="value-num">01</div>
-          <h3 class="value-title">Честность</h3>
-          <p class="value-text">Я работаю только с теми, кому действительно могу помочь. Без обещаний «волшебной таблетки» — только глубокая работа.</p>
+          <h3 class="value-title">Раскрываю силу</h3>
+          <p class="value-text">Нахожу твою уникальную суперсилу и показываю, как она уже работает в твоей жизни — нужно лишь направить её осознанно.</p>
         </div>
         <div class="value-card reveal reveal-delay-1">
           <div class="value-num">02</div>
-          <h3 class="value-title">Глубина</h3>
-          <p class="value-text">Не поверхностные советы, а работа с корнями. Мы исследуем убеждения, паттерны и истинные ценности.</p>
+          <h3 class="value-title">Даю план</h3>
+          <p class="value-text">Конкретная дорожная карта на 8 сессий: без воды, только действия, которые ведут к х2 доходу и ощущению кайфа от жизни.</p>
         </div>
         <div class="value-card reveal reveal-delay-2">
           <div class="value-num">03</div>
-          <h3 class="value-title">Результат</h3>
-          <p class="value-text">Каждая сессия — шаг вперёд. Ясность, решения, инструменты, которые работают в реальной жизни.</p>
+          <h3 class="value-title">Реализую Я</h3>
+          <p class="value-text">Иду рядом как партнёр, а не лектор. Мой опыт — армия, IT, финансы, трейдинг — твой инструмент трансформации.</p>
         </div>
       </div>
     </div>
@@ -1165,53 +1279,48 @@
         </div>
       </div>
       <div class="pricing-grid reveal">
-        <!-- Разовая -->
+
+        <!-- Разовая сессия -->
         <div class="price-card">
-          <div class="price-type">Старт</div>
+          <div class="price-type">Разовая сессия</div>
           <h3 class="price-title">Разовая консультация</h3>
-          <div class="price-amount"><sup>BYN</sup>[XX]</div>
-          <div class="price-currency">за одну сессию · 60 мин</div>
+          <div class="price-amount"><sup>BYN</sup>150</div>
+          <div class="price-currency">первые 10 клиентов · далее 200 BYN</div>
           <div class="price-divider"></div>
           <ul class="price-features">
-            <li>Диагностика текущей ситуации</li>
-            <li>Конкретные рекомендации и шаги</li>
-            <li>Разбор одного ключевого запроса</li>
-            <li>Запись сессии (по желанию)</li>
+            <li>Тест результата</li>
+            <li>Простые запросы</li>
+            <li>1 час 1:1</li>
           </ul>
           <a href="#booking" class="price-btn">Записаться</a>
         </div>
 
-        <!-- Пакет 4 -->
+        <!-- Базовый пакет -->
         <div class="price-card">
-          <div class="price-type">Развитие</div>
-          <h3 class="price-title">Пакет 4 консультации</h3>
-          <div class="price-amount"><sup>BYN</sup>[XX]</div>
-          <div class="price-currency">за пакет · экономия [X]%</div>
+          <div class="price-type">Базовый пакет</div>
+          <h3 class="price-title">4 консультации</h3>
+          <div class="price-amount"><sup>BYN</sup>720</div>
+          <div class="price-currency">4 сессии · 180 BYN/сессия</div>
           <div class="price-divider"></div>
           <ul class="price-features">
-            <li>4 сессии по 60 минут</li>
-            <li>Работа над одной темой в глубину</li>
-            <li>Домашние задания между встречами</li>
-            <li>Поддержка в мессенджере</li>
-            <li>Итоговый план действий</li>
+            <li>1 сессия в неделю (1 месяц)</li>
+            <li>Скидка 5%</li>
+            <li>Базовый результат</li>
           </ul>
           <a href="#booking" class="price-btn">Записаться</a>
         </div>
 
-        <!-- Пакет 8 -->
+        <!-- Продвинутый -->
         <div class="price-card">
-          <div class="price-type">Трансформация</div>
-          <h3 class="price-title">Пакет 8 консультаций</h3>
-          <div class="price-amount"><sup>BYN</sup>[XX]</div>
-          <div class="price-currency">за пакет · экономия [X]%</div>
+          <div class="price-type">Продвинутый</div>
+          <h3 class="price-title">8 консультаций</h3>
+          <div class="price-amount"><sup>BYN</sup>1280</div>
+          <div class="price-currency">8 сессий · 160 BYN/сессия</div>
           <div class="price-divider"></div>
           <ul class="price-features">
-            <li>8 сессий по 60 минут</li>
-            <li>Глубокая системная работа</li>
-            <li>Разбор нескольких сфер жизни</li>
-            <li>Поддержка в мессенджере</li>
-            <li>Практические инструменты</li>
-            <li>Финальная сессия-ревизия</li>
+            <li>Основной продукт!</li>
+            <li>Суперсилы → клиенты → кайф</li>
+            <li>Скидка 15% (2 месяца)</li>
           </ul>
           <a href="#booking" class="price-btn">Записаться</a>
         </div>
@@ -1219,22 +1328,20 @@
         <!-- Премиум -->
         <div class="price-card featured">
           <div class="featured-badge">Premium</div>
-          <div class="price-type">Полное погружение</div>
-          <h3 class="price-title">Премиум пакет</h3>
-          <div class="price-amount"><sup>BYN</sup>[XX]</div>
-          <div class="price-currency">за пакет · максимальный результат</div>
+          <div class="price-type">Премиум</div>
+          <h3 class="price-title">8 сессий + бонусы</h3>
+          <div class="price-amount"><sup>BYN</sup>2500</div>
+          <div class="price-currency">максимальный результат</div>
           <div class="price-divider"></div>
           <ul class="price-features">
-            <li>8 сессий по 60–90 минут</li>
-            <li>Авторские инструменты моего пути</li>
-            <li>Персональная карта роста</li>
-            <li>Чат 24/7 — поддержка без ограничений</li>
-            <li>Практики и техники между сессиями</li>
-            <li>Приоритетная запись</li>
-            <li>Доступ к закрытым материалам</li>
+            <li>Квиз суперсилы</li>
+            <li>Чат-поддержка 24/7</li>
+            <li>Мой путь + инструменты</li>
+            <li>Элитный результат!</li>
           </ul>
           <a href="#booking" class="price-btn">Записаться</a>
         </div>
+
       </div>
     </div>
   </section>
@@ -1261,10 +1368,7 @@
           <p class="quiz-text reveal reveal-delay-1">
             На основе ваших ответов я подготовлю конкретные рекомендации по развитию и укреплению этого дара в повседневной жизни.
           </p>
-          <p class="quiz-note reveal reveal-delay-2">
-            Результаты и рекомендации придут на вашу электронную почту автоматически
-          </p>
-          <div class="reveal reveal-delay-3">
+<div class="reveal reveal-delay-3">
             <button id="openQuiz" class="btn-primary" style="cursor:pointer;display:inline-flex;align-items:center;gap:10px;border:none;">
               Пройти квиз бесплатно
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -1292,15 +1396,11 @@
       <div class="booking-contacts">
         <div class="contact-item">
           <div class="contact-icon">✉</div>
-          <span>ваш@email.com</span>
-        </div>
-        <div class="contact-item">
-          <div class="contact-icon">✆</div>
-          <span>+375 XX XXX-XX-XX</span>
+          <span>vadimermolaev910@gmail.com</span>
         </div>
         <div class="contact-item">
           <div class="contact-icon" style="font-size:13px;">TG</div>
-          <span>@ваш_telegram</span>
+          <span>@vad1m_ermolaev</span>
         </div>
       </div>
     </div>
@@ -1314,13 +1414,13 @@
           <span class="label" style="display:block;margin-bottom:12px;">Самозанятость</span>
           <p class="legal-text">
             Услуги оказываются на основании свидетельства о самозанятости в соответствии с законодательством Республики Беларусь.<br>
-            <strong>[Ваше Полное Имя]</strong> — самозанятое физическое лицо.<br>
+            <strong>Ермолаев Вадим Сергеевич</strong> — самозанятое физическое лицо.<br>
             Деятельность: консультационные услуги в области личностного развития и менторинга.
           </p>
         </div>
         <div class="legal-badge">
           <span class="legal-badge-label">УНП</span>
-          <span class="legal-badge-unp">[XXXXXXXX]</span>
+          <span class="legal-badge-unp">МВ0555477</span>
         </div>
       </div>
     </div>
@@ -1636,7 +1736,7 @@
 
       } else if (step.type === 'email') {
         const val = qState[step.key] || '';
-        html += `<input id="qEmailInput" class="quiz-email-input" type="email" placeholder="ваш@email.com" value="${val}"
+        html += `<input id="qEmailInput" class="quiz-email-input" type="email" placeholder="vadimermolaev910@gmail.com" value="${val}"
           oninput="qState['q7']=this.value;updateNextBtn()" autocomplete="email" />`;
       }
 
