@@ -1430,7 +1430,6 @@
     // ─── QUIZ ─────────────────────────────────────────────────
     // ═══════════════════════════════════════════════════════════
 
-    const FORM_ACTION = 'https://docs.google.com/forms/d/e/1FAIpQLScVdgMYCfc-mPHiSOZBoKTudqxxvoZxrkcvdgIC-Fjw4QqBcQ/formResponse';
     const ENTRY = {
       q1: 'entry.1023959702',
       q2: 'entry.753107583',
@@ -1544,20 +1543,6 @@
           'Помогать людям меняться'
         ]
       },
-      {
-        key: 'q6', entry: ENTRY.q6,
-        label: '',
-        question: 'Отправить результат на email?',
-        type: 'radio',
-        cols: 2,
-        options: ['Да, отправьте', 'Нет']
-      },
-      {
-        key: 'q7', entry: ENTRY.q7,
-        label: '',
-        question: 'Введи email для PDF суперсилы',
-        type: 'email'
-      }
     ];
 
     // ── Состояние ──
@@ -1751,12 +1736,10 @@
       const recs  = RECS[power] || RECS['ГАРМОНИЗАТОР'];
       const desc  = POWER_DESC[power] || '';
       const pct   = recs[3];
-      const hasPdf = qState.q6 === 'Да, отправьте' && qState.q7;
 
-      // Обновляем прогресс до 100%
       document.getElementById('qProgressBar').style.width = '100%';
 
-      let html = `<div class="quiz-result-screen">
+      const html = `<div class="quiz-result-screen">
         <div class="quiz-step-label">Твоя суперсила</div>
         <div class="quiz-result-power">🦸 ${power}</div>
         <p class="quiz-result-sub">${desc}</p>
@@ -1775,110 +1758,17 @@
           <div class="quiz-rec-item"><span class="quiz-rec-num">3</span><span class="quiz-rec-text">${recs[2]}</span></div>
         </div>
 
-        ${hasPdf ? `<div class="quiz-pdf-note">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          PDF-отчёт с полным разбором суперсилы отправляется на <strong>${qState.q7}</strong>
-        </div>` : ''}
-
         <div class="quiz-result-cta">
           <a href="https://www.instagram.com/vad1m_ermolaev?igsh=MWQ3dGpqbjloa2tzcA==" target="_blank" rel="noopener"
              class="btn-primary" style="cursor:pointer;">
-            Записаться к ментору
+            Связаться с ментором
           </a>
-          <button class="quiz-btn-back" onclick="openQuiz()" style="font-size:12px;">Пройти снова</button>
         </div>
       </div>`;
 
       document.getElementById('quizBody').innerHTML = html;
-
-      // ── Фоновая отправка в Google Forms (no-cors) ──
-      submitToGoogleForms();
     }
 
-    // ── Отправка данных в Google Forms ──────────────────────────
-    // Google Forms требует служебные поля fvv, fbzx, pageHistory
-    // иначе запись в таблице не появляется и триггер не срабатывает.
-    // Используем ДВА метода параллельно для надёжности.
-    function submitToGoogleForms() {
-      const map = {
-        q1: ENTRY.q1, q2: ENTRY.q2, q3: ENTRY.q3,
-        q4: ENTRY.q4, q5: ENTRY.q5, q6: ENTRY.q6, q7: ENTRY.q7
-      };
-
-      // ── Метод 1: скрытый iframe + нативная форма ────────────
-      const iframeName = 'gf_hidden_' + Date.now();
-      const iframe = document.createElement('iframe');
-      iframe.name = iframeName;
-      iframe.style.cssText = 'display:none;position:absolute;width:0;height:0;border:0;';
-      document.body.appendChild(iframe);
-
-      const form = document.createElement('form');
-      form.method  = 'POST';
-      form.action  = FORM_ACTION;
-      form.target  = iframeName;
-      form.style.display = 'none';
-      // enctype по умолчанию = application/x-www-form-urlencoded
-
-      // Служебные поля Google Forms (без них запись не сохраняется)
-      const hidden = { fvv: '1', pageHistory: '0', fbzx: String(Date.now()) };
-      Object.entries(hidden).forEach(([name, value]) => {
-        const inp = document.createElement('input');
-        inp.type = 'hidden'; inp.name = name; inp.value = value;
-        form.appendChild(inp);
-      });
-
-      // Поля с ответами
-      Object.entries(map).forEach(([k, entryId]) => {
-        const val = qState[k];
-        if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
-        if (Array.isArray(val)) {
-          // checkbox — каждый выбранный вариант отдельным полем
-          val.forEach(v => {
-            const inp = document.createElement('input');
-            inp.type = 'hidden'; inp.name = entryId; inp.value = v;
-            form.appendChild(inp);
-          });
-        } else {
-          const inp = document.createElement('input');
-          inp.type = 'hidden'; inp.name = entryId; inp.value = val;
-          form.appendChild(inp);
-        }
-      });
-
-      document.body.appendChild(form);
-      form.submit();
-
-      // ── Метод 2: fetch no-cors с URLSearchParams (дублирующий) ─
-      // Отправляем через 300мс с другим fbzx для надёжности
-      setTimeout(() => {
-        const params = new URLSearchParams();
-        params.append('fvv', '1');
-        params.append('pageHistory', '0');
-        params.append('fbzx', String(Date.now() + 1));
-
-        Object.entries(map).forEach(([k, entryId]) => {
-          const val = qState[k];
-          if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
-          if (Array.isArray(val)) {
-            val.forEach(v => params.append(entryId, v));
-          } else {
-            params.append(entryId, val);
-          }
-        });
-
-        fetch(FORM_ACTION, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: params
-        }).catch(() => {});
-      }, 300);
-
-      // Убираем элементы iframe/form через 15 сек
-      setTimeout(() => {
-        try { document.body.removeChild(form); } catch(e) {}
-        try { document.body.removeChild(iframe); } catch(e) {}
-      }, 15000);
-    }
   </script>
 </body>
 </html>
