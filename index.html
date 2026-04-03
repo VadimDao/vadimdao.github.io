@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ментор личностного роста — [Ваше Имя]</title>
+  <meta name="description" content="Персональное менторство для тех, кто готов к трансформации. Узнайте свою суперсилу и начните путь к лучшей версии себя." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────────── */
+    :root {
+      --bg:         #090f0b;
+      --surface:    #0e1c13;
+      --surface-2:  #132018;
+      --text:       #ede4d3;
+      --text-muted: #8a7a60;
+      --gold:       #c8a45a;
+      --gold-light: #e8c87a;
+      --gold-dim:   rgba(200, 164, 90, 0.15);
+      --gold-border:rgba(200, 164, 90, 0.25);
+      --green-mid:  #1a3526;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans:  'Jost', sans-serif;
+      --ease:       cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* ─── RESET ──────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-weight: 300;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── CUSTOM CURSOR ──────────────────────────────────────── */
+    .cursor {
+      position: fixed; z-index: 9999;
+      width: 10px; height: 10px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease), height 0.3s var(--ease), opacity 0.3s;
+    }
+    .cursor-ring {
+      position: fixed; z-index: 9998;
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold-border);
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      transition: transform 0.12s var(--ease), width 0.4s var(--ease), height 0.4s var(--ease), opacity 0.3s;
+    }
+    body:hover .cursor { opacity: 1; }
+    .hoverable:hover ~ .cursor,
+    a:hover ~ .cursor { width: 16px; height: 16px; background: var(--gold-light); }
+
+    /* ─── NOISE OVERLAY ──────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 1;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    /* ─── SCROLLBAR ──────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--gold-border); border-radius: 2px; }
+
+    /* ─── TYPOGRAPHY ─────────────────────────────────────────── */
+    h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; line-height: 1.1; }
+    .label {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .gold { color: var(--gold); }
+
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 1140px; margin: 0 auto; padding: 0 32px; }
+    section { position: relative; z-index: 2; }
+
+    /* ─── REVEAL ANIMATION ───────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.22s; }
+    .reveal-delay-3 { transition-delay: 0.36s; }
+    .reveal-delay-4 { transition-delay: 0.5s; }
+
+    /* ─── NAV ────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 20px 0;
+      transition: background 0.5s, backdrop-filter 0.5s, padding 0.5s;
+    }
+    nav.scrolled {
+      background: rgba(9, 15, 11, 0.88);
+      backdrop-filter: blur(20px);
+      padding: 14px 0;
+      border-bottom: 1px solid var(--gold-border);
+    }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+    .nav-logo span { color: var(--gold); }
+    .nav-links {
+      display: flex; gap: 40px; list-style: none;
+    }
+    .nav-links a {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 22px;
+      border: 1px solid var(--gold-border);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--gold);
+      background: transparent;
+      cursor: none;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+    .nav-cta:hover { background: var(--gold-dim); border-color: var(--gold); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(26,53,38,0.55) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,164,90,0.07) 0%, transparent 60%);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow-line {
+      width: 40px; height: 1px;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+    .hero-title {
+      font-size: clamp(52px, 6vw, 88px);
+      line-height: 1.02;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+    .hero-sub {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 440px;
+      margin-bottom: 48px;
+    }
+    .hero-actions { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 36px;
+      background: var(--gold);
+      color: #060e08;
+      font-family: var(--font-sans);
+      font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      border: none; cursor: none;
+      transition: background 0.3s, transform 0.3s var(--ease);
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); }
+    .btn-secondary {
+      font-size: 12px; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: none;
+      transition: color 0.3s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { color: var(--gold); }
+    .btn-secondary::after {
+      content: '→';
+      font-size: 16px;
+      transition: transform 0.3s var(--ease);
+    }
+    .btn-secondary:hover::after { transform: translateX(4px); }
+
+    .hero-visual {
+      position: relative;
+    }
+    .hero-photo-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4/5;
+    }
+    .hero-photo-bg {
+      position: absolute; inset: 0;
+      background: var(--surface);
+      border: 1px solid var(--gold-border);
+      overflow: hidden;
+    }
+    .hero-photo-bg::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(200,164,90,0.06), transparent 60%);
+    }
+    .photo-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 12px;
+      color: var(--text-muted);
+    }
+    .photo-placeholder-icon {
+      width: 64px; height: 64px;
+      border: 1px solid var(--gold-border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .photo-placeholder-icon svg { opacity: 0.4; }
+    .photo-placeholder p { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.4; }
+    .hero-photo-offset {
+      position: absolute;
+      bottom: -24px; right: -24px;
+      width: 60%;
+      border: 1px solid var(--gold-border);
+      padding: 24px 28px;
+      background: var(--surface-2);
+    }
+    .hero-stat-num {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .hero-stat-label { font-size: 12px; color: var(--text-muted); letter-spacing: 0.08em; }
+
+    .hero-scroll {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      z-index: 3;
+    }
+    .hero-scroll span { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-muted); }
+    .scroll-line {
+      width: 1px; height: 48px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      animation: scrollLine 2s ease-in-out infinite;
+    }
+    @keyframes scrollLine {
+      0% { transform: scaleY(0); transform-origin: top; }
+      50% { transform: scaleY(1); transform-origin: top; }
+      50.01% { transform: scaleY(1); transform-origin: bottom; }
+      100% { transform: scaleY(0); transform-origin: bottom; }
+    }
+
+    /* ─── SECTION COMMON ─────────────────────────────────────── */
+    .section-pad { padding: 120px 0; }
+    .section-header { margin-bottom: 72px; }
+    .section-title {
+      font-size: clamp(42px, 4.5vw, 72px);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-top: 16px;
+    }
+    .divider {
+      width: 60px; height: 1px;
+      background: var(--gold);
+      opacity: 0.5;
+      margin: 32px 0;
+    }
+
+    /* ─── PATH / WHY ─────────────────────────────────────────── */
+    #path {
+      background:
+        radial-gradient(ellipse 60% 80% at 5% 50%, rgba(200,164,90,0.04) 0%, transparent 70%);
+    }
+    .path-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: start;
+    }
+    .path-left { position: sticky; top: 120px; }
+    .path-quote {
+      font-family: var(--font-serif);
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-style: italic;
+      line-height: 1.5;
+      color: var(--text);
+      margin-bottom: 32px;
+      padding-left: 24px;
+      border-left: 2px solid var(--gold);
+    }
+    .path-author {
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+    .path-milestones { display: flex; flex-direction: column; gap: 40px; }
+    .milestone {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    .milestone-year {
+      font-family: var(--font-serif);
+      font-size: 13px;
+      color: var(--gold);
+      letter-spacing: 0.05em;
+      padding-top: 2px;
+    }
+    .milestone-content h4 {
+      font-size: 19px;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+    .milestone-content p {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-muted);
+    }
+    .milestone-dot {
+      display: none;
+    }
+
+    /* ─── VALUES ─────────────────────────────────────────────── */
+    #values {
+      padding: 80px 0;
+      border-top: 1px solid var(--gold-border);
+      border-bottom: 1px solid var(--gold-border);
+      background: var(--surface);
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--gold-border);
+    }
+    .value-card {
+      background: var(--surface);
+      padding: 48px 40px;
+      transition: background 0.4s;
+    }
+    .value-card:hover { background: var(--surface-2); }
+    .value-num {
+      font-family: var(--font-serif);
+      font-size: 56px;
+      color: var(--gold-border);
+      line-height: 1;
+      margin-bottom: 20px;
+      transition: color 0.4s;
+    }
+    .value-card:hover .value-num { color: var(--gold); }
+    .value-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+    .value-text { font-size: 14px; line-height: 1.75; color: var(--text-muted); }
+
+    /* ─── PRICING ────────────────────────────────────────────── */
+    #pricing {
+      background:
+        radial-gradient(ellipse 50% 60% at 80% 20%, rgba(26,53,38,0.4) 0%, transparent 70%);
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--gold-border);
+    }
+    .price-card {
+      background: var(--surface);
+      padding: 40px 32px 48px;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.4s var(--ease), transform 0.4s var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .price-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gold-border);
+      transition: background 0.4s, height 0.4s;
+    }
+    .price-card:hover { background: var(--surface-2); transform: translateY(-4px); }
+    .price-card:hover::before { background: var(--gold); height: 3px; }
+    .price-card.featured {
+      background: var(--green-mid);
+    }
+    .price-card.featured::before { background: var(--gold); height: 3px; }
+    .featured-badge {
+      position: absolute; top: 20px; right: -28px;
+      background: var(--gold);
+      color: #060e08;
+      font-size: 9px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 5px 36px;
+      transform: rotate(45deg);
+    }
+    .price-type {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .price-title {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      line-height: 1.2;
+      margin-bottom: 24px;
+    }
+    .price-amount {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .price-amount sup {
+      font-size: 22px;
+      vertical-align: top;
+      margin-top: 10px;
+      color: var(--gold);
+    }
+    .price-currency {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+    .price-divider {
+      width: 32px; height: 1px;
+      background: var(--gold-border);
+      margin-bottom: 28px;
+    }
+    .price-features {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 14px;
+      flex: 1;
+      margin-bottom: 36px;
+    }
+    .price-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; line-height: 1.5; color: var(--text-muted);
+    }
+    .price-features li::before {
+      content: '—';
+      color: var(--gold);
+      opacity: 0.7;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .price-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      padding: 13px 24px;
+      border: 1px solid var(--gold-border);
+      font-size: 11px; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold);
+      background: transparent;
+      cursor: none;
+      transition: background 0.3s, border-color 0.3s, color 0.3s;
+    }
+    .price-btn:hover { background: var(--gold-dim); border-color: var(--gold); }
+    .price-card.featured .price-btn {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #060e08;
+    }
+    .price-card.featured .price-btn:hover { background: var(--gold-light); }
+
+    /* ─── QUIZ ───────────────────────────────────────────────── */
+    #quiz {
+      padding: 120px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--gold-border);
+    }
+    .quiz-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .quiz-visual {
+      position: relative;
+    }
+    .quiz-glyph {
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      margin: 0 auto;
+    }
+    .quiz-glyph::before {
+      content: '';
+      position: absolute; inset: 20px;
+      border-radius: 50%;
+      border: 1px solid rgba(200,164,90,0.15);
+      animation: spin 20s linear infinite;
+    }
+    .quiz-glyph::after {
+      content: '';
+      position: absolute; inset: 40px;
+      border-radius: 50%;
+      border: 1px dashed rgba(200,164,90,0.1);
+      animation: spin 30s linear infinite reverse;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .quiz-glyph-center {
+      font-family: var(--font-serif);
+      font-size: 80px;
+      color: var(--gold);
+      opacity: 0.7;
+      user-select: none;
+      z-index: 1;
+    }
+    .quiz-floating-tag {
+      position: absolute;
+      padding: 8px 16px;
+      border: 1px solid var(--gold-border);
+      background: var(--bg);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      color: var(--gold);
+      animation: floatTag 4s ease-in-out infinite;
+    }
+    .quiz-floating-tag:nth-child(2) { top: 10%; right: 0; animation-delay: 0s; }
+    .quiz-floating-tag:nth-child(3) { bottom: 15%; left: 0; animation-delay: 1.5s; }
+    @keyframes floatTag {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .quiz-title {
+      font-size: clamp(36px, 3.5vw, 58px);
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin: 16px 0 24px;
+    }
+    .quiz-text {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+    .quiz-note {
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.6;
+      margin-bottom: 40px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .quiz-note::before {
+      content: '✉';
+      color: var(--gold);
+    }
+
+    /* ─── BOOKING ────────────────────────────────────────────── */
+    #booking {
+      padding: 160px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    #booking::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 50% 50%, rgba(26,53,38,0.6) 0%, transparent 70%);
+    }
+    .booking-inner { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
+    .booking-super {
+      font-family: var(--font-serif);
+      font-size: clamp(18px, 2vw, 26px);
+      font-style: italic;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .booking-title {
+      font-size: clamp(48px, 6vw, 96px);
+      letter-spacing: -0.03em;
+      line-height: 0.95;
+      margin-bottom: 32px;
+    }
+    .booking-title em { font-style: italic; color: var(--gold); }
+    .booking-text {
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      margin-bottom: 52px;
+    }
+    .booking-contacts {
+      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+      margin-top: 40px;
+    }
+    .contact-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 14px; color: var(--text-muted);
+    }
+    .contact-icon {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gold-border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    /* ─── LEGAL ──────────────────────────────────────────────── */
+    #legal {
+      padding: 60px 0;
+      border-top: 1px solid var(--gold-border);
+      background: var(--surface);
+    }
+    .legal-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 32px; flex-wrap: wrap;
+    }
+    .legal-text {
+      font-size: 13px;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 520px;
+    }
+    .legal-text strong { color: var(--text); font-weight: 400; }
+    .legal-badge {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 4px;
+    }
+    .legal-badge-label {
+      font-size: 9px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+    .legal-badge-unp {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--gold);
+      letter-spacing: 0.08em;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--gold-border);
+      background: var(--bg);
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .footer-nav {
+      display: flex; gap: 32px; list-style: none;
+    }
+    .footer-nav a {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); opacity: 0.5;
+      transition: opacity 0.3s, color 0.3s;
+    }
+    .footer-nav a:hover { opacity: 1; color: var(--gold); }
+
+    /* ─── MOBILE NAV TOGGLE ──────────────────────────────────── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column; gap: 5px; cursor: none;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      width: 24px; height: 1px;
+      background: var(--text);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+      .path-grid { grid-template-columns: 1fr; gap: 60px; }
+      .path-left { position: static; }
+    }
+    @media (max-width: 768px) {
+      .container { padding: 0 20px; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .hero-grid { grid-template-columns: 1fr; gap: 60px; }
+      .hero-visual { display: none; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      .quiz-inner { grid-template-columns: 1fr; }
+      .quiz-visual { display: none; }
+      .values-grid { grid-template-columns: 1fr; }
+      .legal-inner { flex-direction: column; align-items: flex-start; }
+      .legal-badge { align-items: flex-start; }
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
+    /* ─── MARQUEE ────────────────────────────────────────────── */
+    .marquee-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--gold-border);
+      border-bottom: 1px solid var(--gold-border);
+      padding: 18px 0;
+      background: var(--surface);
+      z-index: 2; position: relative;
+    }
+    .marquee-track {
+      display: flex; gap: 0;
+      animation: marquee 28s linear infinite;
+      white-space: nowrap;
+    }
+    .marquee-item {
+      display: inline-flex; align-items: center; gap: 24px;
+      padding: 0 40px;
+      font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .marquee-dot {
+      width: 4px; height: 4px;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+    @keyframes marquee { to { transform: translateX(-50%); } }
+
+    /* ─── MOBILE MENU ────────────────────────────────────────── */
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--bg);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 40px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close {
+      position: absolute; top: 24px; right: 24px;
+      font-size: 28px; color: var(--text-muted);
+      cursor: none;
+      background: none; border: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-close" id="mobileClose">✕</button>
+    <a href="#path" onclick="closeMobile()">Мой путь</a>
+    <a href="#pricing" onclick="closeMobile()">Услуги</a>
+    <a href="#quiz" onclick="closeMobile()">Квиз</a>
+    <a href="#booking" onclick="closeMobile()">Записаться</a>
+  </div>
+
+  <!-- NAV -->
+  <nav id="mainNav">
+    <div class="container">
+      <div class="nav-inner">
+        <a href="#hero" class="nav-logo">[Ваше <span>Имя</span>]</a>
+        <ul class="nav-links">
+          <li><a href="#path">Мой путь</a></li>
+          <li><a href="#pricing">Услуги</a></li>
+          <li><a href="#quiz">Квиз</a></li>
+          <li><a href="#booking">Контакт</a></li>
+        </ul>
+        <a href="#booking" class="nav-cta">Записаться</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Меню">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-eyebrow reveal">
+            <div class="hero-eyebrow-line"></div>
+            <span class="label">Ментор личностного роста</span>
+          </div>
+          <h1 class="hero-title reveal reveal-delay-1">
+            Твоя<br><em>трансформация</em><br>начинается здесь
+          </h1>
+          <p class="hero-sub reveal reveal-delay-2">
+            Я помогаю людям открыть свою суперсилу, выстроить путь к осознанной жизни и реализовать потенциал, который всегда был внутри.
+          </p>
+          <div class="hero-actions reveal reveal-delay-3">
+            <a href="#booking" class="btn-primary">Начать путь</a>
+            <a href="#quiz" class="btn-secondary">Узнать свою суперсилу</a>
+          </div>
+        </div>
+        <div class="hero-visual reveal reveal-delay-2">
+          <div class="hero-photo-wrap">
+            <div class="hero-photo-bg">
+              <div class="photo-placeholder">
+                <div class="photo-placeholder-icon">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <circle cx="12" cy="8" r="4"/>
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                  </svg>
+                </div>
+                <p>Ваше фото</p>
+              </div>
+            </div>
+            <div class="hero-photo-offset">
+              <div class="hero-stat-num">100+</div>
+              <div class="hero-stat-label">трансформационных сессий</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span>Далее</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <!-- Дублирую для бесшовного цикла -->
+      <span class="marquee-item"><span class="marquee-dot"></span>Осознанность</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Трансформация</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Личный рост</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Суперсила</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Путь</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Менторство</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Потенциал</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Осознанность</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Трансформация</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Личный рост</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Суперсила</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Путь</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Менторство</span>
+      <span class="marquee-item"><span class="marquee-dot"></span>Потенциал</span>
+    </div>
+  </div>
+
+  <!-- MY PATH -->
+  <section id="path" class="section-pad">
+    <div class="container">
+      <div class="path-grid">
+        <div class="path-left">
+          <div class="reveal">
+            <span class="label">Почему я этим занимаюсь</span>
+            <h2 class="section-title">Мой<br><em style="font-style:italic;color:var(--gold)">путь</em></h2>
+            <div class="divider"></div>
+            <blockquote class="path-quote">
+              «Я прошёл через кризис смыслов, потерю ориентиров и страх собственного потенциала. Именно этот путь сделал меня ментором.»
+            </blockquote>
+            <p class="path-author">— [Ваше Имя]</p>
+          </div>
+        </div>
+        <div class="path-milestones">
+          <div class="milestone reveal">
+            <div class="milestone-year">[Год]</div>
+            <div class="milestone-content">
+              <h4>Точка перелома</h4>
+              <p>[Опишите момент, когда вы осознали необходимость перемен — личный кризис, профессиональное выгорание или переломное событие в жизни.]</p>
+            </div>
+          </div>
+          <div class="milestone reveal reveal-delay-1">
+            <div class="milestone-year">[Год]</div>
+            <div class="milestone-content">
+              <h4>Поиск и практики</h4>
+              <p>[Расскажите о своём пути: какие методики, учителя, практики и инсайты привели вас к трансформации и помогли обрести себя.]</p>
+            </div>
+          </div>
+          <div class="milestone reveal reveal-delay-2">
+            <div class="milestone-year">[Год]</div>
+            <div class="milestone-content">
+              <h4>Первые результаты</h4>
+              <p>[Опишите первые значимые результаты — изменения в жизни, профессии, отношениях — которые подтвердили правильность выбранного пути.]</p>
+            </div>
+          </div>
+          <div class="milestone reveal reveal-delay-3">
+            <div class="milestone-year">Сейчас</div>
+            <div class="milestone-content">
+              <h4>Менторство как призвание</h4>
+              <p>[Объясните, почему вы выбрали менторство: желание передавать опыт, видеть трансформацию других, создавать инструменты роста для своих клиентов.]</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section id="values">
+    <div class="container">
+      <div class="values-grid">
+        <div class="value-card reveal">
+          <div class="value-num">01</div>
+          <h3 class="value-title">Честность</h3>
+          <p class="value-text">Я работаю только с теми, кому действительно могу помочь. Без обещаний «волшебной таблетки» — только глубокая работа.</p>
+        </div>
+        <div class="value-card reveal reveal-delay-1">
+          <div class="value-num">02</div>
+          <h3 class="value-title">Глубина</h3>
+          <p class="value-text">Не поверхностные советы, а работа с корнями. Мы исследуем убеждения, паттерны и истинные ценности.</p>
+        </div>
+        <div class="value-card reveal reveal-delay-2">
+          <div class="value-num">03</div>
+          <h3 class="value-title">Результат</h3>
+          <p class="value-text">Каждая сессия — шаг вперёд. Ясность, решения, инструменты, которые работают в реальной жизни.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" class="section-pad">
+    <div class="container">
+      <div class="section-header">
+        <div class="reveal">
+          <span class="label">Форматы работы</span>
+          <h2 class="section-title">Выберите<br>свой <em style="font-style:italic;color:var(--gold)">пакет</em></h2>
+          <div class="divider"></div>
+          <p style="font-size:16px;color:var(--text-muted);max-width:480px;line-height:1.75;">
+            Каждый формат — это шаг к трансформации. Выберите тот, что соответствует вашему запросу и готовности к изменениям.
+          </p>
+        </div>
+      </div>
+      <div class="pricing-grid reveal">
+        <!-- Разовая -->
+        <div class="price-card">
+          <div class="price-type">Старт</div>
+          <h3 class="price-title">Разовая консультация</h3>
+          <div class="price-amount"><sup>BYN</sup>[XX]</div>
+          <div class="price-currency">за одну сессию · 60 мин</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>Диагностика текущей ситуации</li>
+            <li>Конкретные рекомендации и шаги</li>
+            <li>Разбор одного ключевого запроса</li>
+            <li>Запись сессии (по желанию)</li>
+          </ul>
+          <a href="#booking" class="price-btn">Записаться</a>
+        </div>
+
+        <!-- Пакет 4 -->
+        <div class="price-card">
+          <div class="price-type">Развитие</div>
+          <h3 class="price-title">Пакет 4 консультации</h3>
+          <div class="price-amount"><sup>BYN</sup>[XX]</div>
+          <div class="price-currency">за пакет · экономия [X]%</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>4 сессии по 60 минут</li>
+            <li>Работа над одной темой в глубину</li>
+            <li>Домашние задания между встречами</li>
+            <li>Поддержка в мессенджере</li>
+            <li>Итоговый план действий</li>
+          </ul>
+          <a href="#booking" class="price-btn">Записаться</a>
+        </div>
+
+        <!-- Пакет 8 -->
+        <div class="price-card">
+          <div class="price-type">Трансформация</div>
+          <h3 class="price-title">Пакет 8 консультаций</h3>
+          <div class="price-amount"><sup>BYN</sup>[XX]</div>
+          <div class="price-currency">за пакет · экономия [X]%</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>8 сессий по 60 минут</li>
+            <li>Глубокая системная работа</li>
+            <li>Разбор нескольких сфер жизни</li>
+            <li>Поддержка в мессенджере</li>
+            <li>Практические инструменты</li>
+            <li>Финальная сессия-ревизия</li>
+          </ul>
+          <a href="#booking" class="price-btn">Записаться</a>
+        </div>
+
+        <!-- Премиум -->
+        <div class="price-card featured">
+          <div class="featured-badge">Premium</div>
+          <div class="price-type">Полное погружение</div>
+          <h3 class="price-title">Премиум пакет</h3>
+          <div class="price-amount"><sup>BYN</sup>[XX]</div>
+          <div class="price-currency">за пакет · максимальный результат</div>
+          <div class="price-divider"></div>
+          <ul class="price-features">
+            <li>8 сессий по 60–90 минут</li>
+            <li>Авторские инструменты моего пути</li>
+            <li>Персональная карта роста</li>
+            <li>Чат 24/7 — поддержка без ограничений</li>
+            <li>Практики и техники между сессиями</li>
+            <li>Приоритетная запись</li>
+            <li>Доступ к закрытым материалам</li>
+          </ul>
+          <a href="#booking" class="price-btn">Записаться</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="quiz">
+    <div class="container">
+      <div class="quiz-inner">
+        <div class="quiz-visual">
+          <div class="quiz-glyph">
+            <div class="quiz-glyph-center">✦</div>
+          </div>
+          <div class="quiz-floating-tag">Самоосознание</div>
+          <div class="quiz-floating-tag">Суперсила</div>
+        </div>
+        <div>
+          <div class="reveal">
+            <span class="label">Бесплатный квиз</span>
+            <h2 class="quiz-title">Открой свою<br><em style="font-style:italic;color:var(--gold)">суперсилу</em></h2>
+          </div>
+          <p class="quiz-text reveal reveal-delay-1">
+            Пройдите короткий квиз и получите персональный разбор вашей суперсилы — уникального качества, которое ведёт вас к реализации.
+          </p>
+          <p class="quiz-text reveal reveal-delay-1">
+            На основе ваших ответов я подготовлю конкретные рекомендации по развитию и укреплению этого дара в повседневной жизни.
+          </p>
+          <p class="quiz-note reveal reveal-delay-2">
+            Результаты и рекомендации придут на вашу электронную почту автоматически
+          </p>
+          <div class="reveal reveal-delay-3">
+            <!-- Замените ссылку на вашу Google Forms -->
+            <a href="https://forms.google.com/ВАША_ССЫЛКА" target="_blank" rel="noopener" class="btn-primary" style="cursor:pointer;display:inline-flex;">
+              Пройти квиз бесплатно
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M7 17L17 7M17 7H7M17 7v10"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section id="booking">
+    <div class="booking-inner reveal">
+      <p class="booking-super">Готовы начать?</p>
+      <h2 class="booking-title">Запишитесь<br>к <em>ментору</em></h2>
+      <p class="booking-text">
+        Первый шаг — самый важный. Оставьте заявку, и я свяжусь с вами в течение 24 часов, чтобы ответить на вопросы и подобрать подходящий формат работы.
+      </p>
+      <!-- Замените ссылку на вашу форму записи / мессенджер -->
+      <a href="mailto:ваш@email.com" class="btn-primary" style="cursor:pointer;font-size:13px;padding:18px 44px;">
+        Оставить заявку
+      </a>
+      <div class="booking-contacts">
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <span>ваш@email.com</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">✆</div>
+          <span>+375 XX XXX-XX-XX</span>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon" style="font-size:13px;">TG</div>
+          <span>@ваш_telegram</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEGAL / САМОЗАНЯТОСТЬ -->
+  <section id="legal">
+    <div class="container">
+      <div class="legal-inner">
+        <div>
+          <span class="label" style="display:block;margin-bottom:12px;">Самозанятость</span>
+          <p class="legal-text">
+            Услуги оказываются на основании свидетельства о самозанятости в соответствии с законодательством Республики Беларусь.<br>
+            <strong>[Ваше Полное Имя]</strong> — самозанятое физическое лицо.<br>
+            Деятельность: консультационные услуги в области личностного развития и менторинга.
+          </p>
+        </div>
+        <div class="legal-badge">
+          <span class="legal-badge-label">УНП</span>
+          <span class="legal-badge-unp">[XXXXXXXX]</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <p class="footer-copy">© 2024 [Ваше Имя] · Все права защищены</p>
+        <ul class="footer-nav">
+          <li><a href="#path">Путь</a></li>
+          <li><a href="#pricing">Услуги</a></li>
+          <li><a href="#quiz">Квиз</a></li>
+          <li><a href="#booking">Связь</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── CURSOR ───────────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+    const ring   = document.getElementById('cursorRing');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top  = my + 'px';
+    });
+
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top  = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    document.querySelectorAll('a, button, .price-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.width  = '18px';
+        cursor.style.height = '18px';
+        ring.style.width    = '56px';
+        ring.style.height   = '56px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.width  = '10px';
+        cursor.style.height = '10px';
+        ring.style.width    = '36px';
+        ring.style.height   = '36px';
+      });
+    });
+
+    // ─── NAV SCROLL ───────────────────────────────────────────
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    // ─── MOBILE MENU ──────────────────────────────────────────
+    document.getElementById('navToggle').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('open');
+    });
+    document.getElementById('mobileClose').addEventListener('click', closeMobile);
+    function closeMobile() {
+      document.getElementById('mobileMenu').classList.remove('open');
+    }
+
+    // ─── REVEAL ON SCROLL ─────────────────────────────────────
+    const revealEls = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => obs.observe(el));
+
+    // ─── HERO IMMEDIATE REVEAL ────────────────────────────────
+    window.addEventListener('load', () => {
+      document.querySelectorAll('#hero .reveal').forEach((el, i) => {
+        setTimeout(() => el.classList.add('visible'), i * 180);
+      });
+    });
+  </script>
+</body>
+</html>
