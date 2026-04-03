@@ -1795,58 +1795,89 @@
       submitToGoogleForms();
     }
 
-    // ── Отправка данных в Google Forms через скрытый iframe (надёжный метод) ──
+    // ── Отправка данных в Google Forms ──────────────────────────
+    // Google Forms требует служебные поля fvv, fbzx, pageHistory
+    // иначе запись в таблице не появляется и триггер не срабатывает.
+    // Используем ДВА метода параллельно для надёжности.
     function submitToGoogleForms() {
-      // 1. Создаём скрытый iframe — он принимает ответ Google Forms
-      //    и не даёт браузеру перейти на страницу подтверждения
+      const map = {
+        q1: ENTRY.q1, q2: ENTRY.q2, q3: ENTRY.q3,
+        q4: ENTRY.q4, q5: ENTRY.q5, q6: ENTRY.q6, q7: ENTRY.q7
+      };
+
+      // ── Метод 1: скрытый iframe + нативная форма ────────────
       const iframeName = 'gf_hidden_' + Date.now();
       const iframe = document.createElement('iframe');
       iframe.name = iframeName;
       iframe.style.cssText = 'display:none;position:absolute;width:0;height:0;border:0;';
       document.body.appendChild(iframe);
 
-      // 2. Создаём скрытую форму с методом POST и target = наш iframe
       const form = document.createElement('form');
       form.method  = 'POST';
       form.action  = FORM_ACTION;
       form.target  = iframeName;
       form.style.display = 'none';
-      // enctype по умолчанию = application/x-www-form-urlencoded — именно то, что ждёт Google Forms
+      // enctype по умолчанию = application/x-www-form-urlencoded
 
-      // 3. Добавляем поля (только заполненные)
-      const map = {
-        q1: ENTRY.q1, q2: ENTRY.q2, q3: ENTRY.q3,
-        q4: ENTRY.q4, q5: ENTRY.q5, q6: ENTRY.q6, q7: ENTRY.q7
-      };
+      // Служебные поля Google Forms (без них запись не сохраняется)
+      const hidden = { fvv: '1', pageHistory: '0', fbzx: String(Date.now()) };
+      Object.entries(hidden).forEach(([name, value]) => {
+        const inp = document.createElement('input');
+        inp.type = 'hidden'; inp.name = name; inp.value = value;
+        form.appendChild(inp);
+      });
+
+      // Поля с ответами
       Object.entries(map).forEach(([k, entryId]) => {
         const val = qState[k];
-        if (val === undefined || val === '') return;
-        // checkbox — массив значений, каждое отправляем отдельным полем
+        if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
         if (Array.isArray(val)) {
+          // checkbox — каждый выбранный вариант отдельным полем
           val.forEach(v => {
             const inp = document.createElement('input');
-            inp.type  = 'hidden';
-            inp.name  = entryId;
-            inp.value = v;
+            inp.type = 'hidden'; inp.name = entryId; inp.value = v;
             form.appendChild(inp);
           });
         } else {
           const inp = document.createElement('input');
-          inp.type  = 'hidden';
-          inp.name  = entryId;
-          inp.value = val;
+          inp.type = 'hidden'; inp.name = entryId; inp.value = val;
           form.appendChild(inp);
         }
       });
 
       document.body.appendChild(form);
-      form.submit(); // нативный POST — без CORS, без fetch
+      form.submit();
 
-      // 4. Убираем элементы через 10 сек (достаточно для завершения запроса)
+      // ── Метод 2: fetch no-cors с URLSearchParams (дублирующий) ─
+      // Отправляем через 300мс с другим fbzx для надёжности
+      setTimeout(() => {
+        const params = new URLSearchParams();
+        params.append('fvv', '1');
+        params.append('pageHistory', '0');
+        params.append('fbzx', String(Date.now() + 1));
+
+        Object.entries(map).forEach(([k, entryId]) => {
+          const val = qState[k];
+          if (val === undefined || val === '' || (Array.isArray(val) && val.length === 0)) return;
+          if (Array.isArray(val)) {
+            val.forEach(v => params.append(entryId, v));
+          } else {
+            params.append(entryId, val);
+          }
+        });
+
+        fetch(FORM_ACTION, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: params
+        }).catch(() => {});
+      }, 300);
+
+      // Убираем элементы iframe/form через 15 сек
       setTimeout(() => {
         try { document.body.removeChild(form); } catch(e) {}
         try { document.body.removeChild(iframe); } catch(e) {}
-      }, 10000);
+      }, 15000);
     }
   </script>
 </body>
