@@ -245,20 +245,6 @@
       position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(200,164,90,0.06), transparent 60%);
     }
-    .photo-placeholder {
-      width: 100%; height: 100%;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 12px;
-      color: var(--text-muted);
-    }
-    .photo-placeholder-icon {
-      width: 64px; height: 64px;
-      border: 1px solid var(--gold-border);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .photo-placeholder-icon svg { opacity: 0.4; }
-    .photo-placeholder p { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.4; }
     .hero-photo-offset {
       position: absolute;
       bottom: -24px; right: -24px;
@@ -855,15 +841,8 @@
         <div class="hero-visual reveal reveal-delay-2">
           <div class="hero-photo-wrap">
             <div class="hero-photo-bg">
-              <div class="photo-placeholder">
-                <div class="photo-placeholder-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                    <circle cx="12" cy="8" r="4"/>
-                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-                  </svg>
-                </div>
-                <p>Ваше фото</p>
-              </div>
+              <img src="vadimdaophoto.jpg" alt="Вадим — ментор личностного роста"
+                   style="width:100%;height:100%;object-fit:cover;object-position:top;" />
             </div>
             <div class="hero-photo-offset">
               <div class="hero-stat-num">100+</div>
