@@ -156,9 +156,8 @@
 
     /* ─── HERO ───────────────────────────────────────────────── */
     #hero {
-      min-height: 100vh;
       display: flex; align-items: center;
-      padding: 120px 0 80px;
+      padding: 48px 0 80px;
       overflow: hidden;
     }
     .hero-bg {
@@ -1039,6 +1038,19 @@
       cursor: none;
       background: none; border: none;
     }
+    .pdf-download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 11px 28px;
+      background: var(--gold);
+      color: #060e08;
+      font-family: var(--font-sans); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.3s;
+      cursor: pointer;
+    }
+    .pdf-download-btn:hover { background: var(--gold-light); }
+    .pdf-download-btn svg, .pdf-download-btn span { pointer-events: none; }
   </style>
 </head>
 
@@ -1075,6 +1087,46 @@
       </div>
     </div>
   </nav>
+
+  <!-- PDF BLOCK -->
+  <section style="position:relative;z-index:2;padding:80px 0 48px;background:var(--bg);">
+    <div class="container">
+      <div class="reveal" style="display:flex;justify-content:center;">
+        <div style="
+          position:relative;
+          width:340px;height:340px;
+          background:var(--surface);
+          border:1px solid var(--gold-border);
+          display:flex;flex-direction:column;align-items:center;justify-content:center;
+          text-align:center;
+          padding:40px 36px;
+          overflow:hidden;
+        ">
+          <!-- corner accents -->
+          <span style="position:absolute;top:0;left:0;width:24px;height:24px;border-top:2px solid var(--gold);border-left:2px solid var(--gold);"></span>
+          <span style="position:absolute;top:0;right:0;width:24px;height:24px;border-top:2px solid var(--gold);border-right:2px solid var(--gold);"></span>
+          <span style="position:absolute;bottom:0;left:0;width:24px;height:24px;border-bottom:2px solid var(--gold);border-left:2px solid var(--gold);"></span>
+          <span style="position:absolute;bottom:0;right:0;width:24px;height:24px;border-bottom:2px solid var(--gold);border-right:2px solid var(--gold);"></span>
+          <!-- background glyph -->
+          <span style="position:absolute;font-family:var(--font-serif);font-size:180px;color:var(--gold);opacity:0.04;user-select:none;pointer-events:none;line-height:1;top:50%;left:50%;transform:translate(-50%,-50%);">✦</span>
+          <!-- content -->
+          <span class="label" style="display:block;margin-bottom:18px;">Бесплатный гайд</span>
+          <h3 style="font-family:var(--font-serif);font-size:20px;line-height:1.3;letter-spacing:0.05em;color:var(--text);margin-bottom:14px;">
+            &laquo;МОСТ В<br>БЕССОЗНАТЕЛЬНОЕ&raquo;
+          </h3>
+          <p style="font-size:13px;line-height:1.7;color:var(--text-muted);margin-bottom:28px;">
+            Лаконичный и пошаговый алгоритм, который поможет навести мост между миром снов и материальной жизнью.
+          </p>
+          <a href="./dream.pdf" download="dream.pdf" class="pdf-download-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M12 3v13M7 11l5 5 5-5"/><line x1="3" y1="21" x2="21" y2="21"/>
+            </svg>
+            <span>Скачать PDF</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- HERO -->
   <section id="hero">
